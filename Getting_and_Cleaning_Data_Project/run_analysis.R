@@ -23,22 +23,22 @@ set_dt_Y[,1] = act[set_dt_Y[,1], 2]
 names(set_dt_Y) <- "activity"
 # 4. Appropriately labels the data set with descriptive activity names.
 names(set_dt_S) <- "subject"
-cleaned <- cbind(set_dt_S, set_dt_Y, set_dt_X)
-write.table(cleaned, "clean_data.txt")
+t_data <- cbind(set_dt_S, set_dt_Y, set_dt_X)
+write.table(t_data, "clean_data.txt")
 # 5. Creates a 2nd, independent tidy data set with the average of each variable for each activity and each subject.
 uniqueSubj = unique(set_dt_S)[,1]
 numSubj = length(unique(set_dt_S)[,1])
-numAct = length(activities[,1])
-numCols = dim(cleaned)[2]
-res = cleaned[1:(numSubj*numAct), ]
+numAct = length(act[,1])
+numCols = dim(t_data)[2]
+res = t_data[1:(numSubj*numAct), ]
 row = 1
-for (s in 1:numSubj) {
-  for (a in 1:numAct) {
-    result[row, 1] = uniqueSubj[set_dt_S]
-    result[row, 2] = act[a, 2]
-    tmp <- cleaned[cleaned$subject==s & cleaned$activity==activities[a, 2], ]
-    result[row, 3:numCols] <- colMeans(tmp[, 3:numCols])
+for (nsubj in 1:numSubj) {
+  for (nact in 1:numAct) {
+    res[row, 1] = uniqueSubj[nsubj]
+    res[row, 2] = act[nact, 2]
+    tmp <- t_data[t_data$subject==nsubj & t_data$activity==act[nact, 2], ]
+    res[row, 3:numCols] <- colMeans(tmp[, 3:numCols])
     row = row+1
   }
 }
-write.table(result, "dt_st_w_aver.txt")
+write.table(res, "dt_st_w_aver.txt",row.name=FALSE)
